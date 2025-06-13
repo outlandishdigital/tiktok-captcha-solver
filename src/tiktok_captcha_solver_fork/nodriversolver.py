@@ -10,7 +10,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from undetected_chromedriver import logging
 from undetected_chromedriver.patcher import random
 
-from nodriver import Tab
+from zendriver import Tab
 
 from tiktok_captcha_solver.asyncsolver import AsyncSolver
 
@@ -25,7 +25,7 @@ class NodriverSolver(AsyncSolver):
     tab: Tab
 
     def __init__(
-            self, 
+            self,
             tab: Tab,
             sadcaptcha_api_key: str,
             headers: dict | None = None,
@@ -160,13 +160,13 @@ class NodriverSolver(AsyncSolver):
 
         Args:
             element: WebElement to click inside
-            proportion_x: float from 0 to 1 defining the proportion x location to click 
-            proportion_y: float from 0 to 1 defining the proportion y location to click 
+            proportion_x: float from 0 to 1 defining the proportion x location to click
+            proportion_y: float from 0 to 1 defining the proportion y location to click
         """
         x_origin = element.location["x"]
         y_origin = element.location["y"]
         x_offset = (proportion_x * element.size["width"])
-        y_offset = (proportion_y * element.size["height"]) 
+        y_offset = (proportion_y * element.size["height"])
         action = ActionBuilder(self.tab)
         action.pointer_action \
             .move_to_location(x_origin + x_offset, y_origin + y_offset) \

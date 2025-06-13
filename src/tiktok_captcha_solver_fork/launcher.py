@@ -9,7 +9,7 @@ import requests
 from selenium.webdriver import ChromeOptions
 from selenium import webdriver
 import undetected_chromedriver as uc
-import nodriver
+import zendriver as nodriver
 
 from playwright import sync_api
 from playwright import async_api
@@ -21,7 +21,7 @@ async def make_nodriver_solver(
     **nodriver_start_kwargs
 ) -> nodriver.Browser:
     """Create a nodriver Browser patched with SadCaptcha.
-    
+
     Args:
         api_key (str): SadCaptcha API key
         nodriver_start_args: Keyword arguments for nodriver.start()
@@ -51,7 +51,7 @@ def make_selenium_solver(
     **webdriver_chrome_kwargs
 ) -> uc.Chrome:
     """Create an selenium chromedriver patched with SadCaptcha.
-    
+
     Args:
         api_key (str): SadCaptcha API key
         options (ChromeOptions | None): Options to launch webdriver.Chrome with
@@ -76,7 +76,7 @@ def make_undetected_chromedriver_solver(
     **uc_chrome_kwargs
 ) -> uc.Chrome:
     """Create an undetected chromedriver patched with SadCaptcha.
-    
+
     Args:
         api_key (str): SadCaptcha API key
         options (ChromeOptions | None): Options to launch uc.Chrome with
@@ -104,7 +104,7 @@ def make_playwright_solver_context(
     **playwright_context_kwargs
 ) -> sync_api.BrowserContext:
     """Create a playwright context patched with SadCaptcha.
-    
+
     Args:
         playwright (playwright.sync_api.playwright) - Playwright instance
         api_key (str): SadCaptcha API key
@@ -134,7 +134,7 @@ async def make_async_playwright_solver_context(
     **playwright_context_kwargs
 ) -> async_api.BrowserContext:
     """Create a async playwright context patched with SadCaptcha.
-    
+
     Args:
         playwright (playwright.async_api.playwright) - Playwright instance
         api_key (str): SadCaptcha API key
@@ -169,10 +169,10 @@ def _prepare_pw_context_args(
             f"--disable-extensions-except={ext}",
             f"--load-extension={ext}",
             '--disable-blink-features=AutomationControlled',
-            '--no-sandbox',         
+            '--no-sandbox',
             '--disable-web-security',
-            '--disable-infobars',  
-            '--start-maximized',  
+            '--disable-infobars',
+            '--start-maximized',
         ]
     playwright_context_kwargs["args"].append("--disable-features=DisableLoadExtensionCommandLineSwitch")
     if playwright_context_kwargs.get("headless") == True:
@@ -219,17 +219,17 @@ def _patch_extension_file_with_key(extension_dir: str, api_key: str) -> None:
     try:
         with open(script_path, "r", encoding="utf-8") as f:
             script = f.read()
-        
+
         original_script = script
         script = patch_extension_script_with_key(script, api_key)
-        
+
         # Verify replacement happened
         if script == original_script:
             LOGGER.warning("API key pattern not found in script.js")
-        
+
         with open(script_path, "w", encoding="utf-8") as f:
             f.write(script)
-            
+
         LOGGER.debug("Successfully patched extension file with API key")
     except Exception as e:
         LOGGER.error(f"Failed to patch extension with API key: {e}")
@@ -242,7 +242,7 @@ def patch_extension_script_with_key(script: str, api_key: str) -> str:
 
 def verify_api_key_injection(extension_dir, api_key):
     script_path = os.path.join(extension_dir, "script.js")
-    
+
     # Check if file exists and contains your API key
     if os.path.exists(script_path):
         with open(script_path, "r", encoding="utf-8") as f:

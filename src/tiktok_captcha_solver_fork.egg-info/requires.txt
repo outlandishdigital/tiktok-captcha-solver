@@ -9,3 +9,4 @@ playwright-stealth
 undetected_chromedriver
 setuptools
 nodriver
+zendriver
